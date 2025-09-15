@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block title %}
+Bugs Tracker
+{% endblock %}
+
+{% block content %}
+<h2 class="text-center mt-3">Bugs list</h2>
+<a class="btn btn-primary mx-3" href="{% url "bug_create" %}">Add a bug</a>
+<div class="container mt-4">
+    <div class="row">
+        {% for bug in bugs %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if bug.screenshot %}
+                <img src="{{ bug.screenshot.url }}" class="card-img-top" alt="Bug screenshot">
+                {% else %}
+                <img src="{% static 'default.png' %}" class="card-img-top" alt="No screenshot">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ bug.title }}</h5>
+                    <p class="card-text">{{ bug.description }}</p>
+                    <p class="card-detail">Status: {{ bug.status }}  Priority: {{ bug.priority }}</p>
+                    <p class="card-whom">Assigned to user: {{ bug.assigned_to }}</p>
+                    {% if bug.reported_by == user %}
+                    <a href="{% url "bug_edit" bug.id %}" class="btn btn-primary">Edit</a>
+                    <a href="{% url "bug_delete" bug.id %}" class="btn btn-danger">Delete</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

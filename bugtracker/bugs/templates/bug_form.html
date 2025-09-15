@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{% if form.instance.pk %} Edit bug {% else %} Add Bug {% endif %}
+{% endblock %}
+
+{% block content %}
+<h2 class="text-center mt-3">
+    {% if form.instance.pk %} Edit bug details 
+    {% else %} Add a new bug 
+    {% endif %}
+</h2>
+
+<style>
+    .bugform {
+        max-width: 600px;
+        margin: 30px auto;
+        padding: 20px;
+        background: #212529;
+    }
+
+    .bugform form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .bugform input, 
+    .bugform textarea, 
+    .bugform select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+
+    .bugform button {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 8px;
+    }
+
+    .bugform a {
+        display: inline-block;
+        margin-top: 15px;
+        text-decoration: none;
+        color: #007bff;
+    }
+
+    .bugform a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="bugform">
+    <form method="post" enctype="multipart/form-data" class="form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-warning" type="submit">
+            {% if form.instance.pk %} Update bug {% else %} Add this bug {% endif %}
+        </button>
+    </form>
+    <a href="{% url "bug_list" %}">Back to bug list</a>
+</div>
+{% endblock %}
