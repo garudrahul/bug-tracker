@@ -7,14 +7,15 @@ Bugs Tracker
 
 {% block content %}
 <h2 class="text-center mt-3">Bugs list</h2>
-<a class="btn btn-primary mx-3" href="{% url "bug_create" %}">Add a bug</a>
+<a class="btn btn-primary mx-3" href="">Add a bug</a> 
+{% comment %} {% url "bug_create" %} {% endcomment %}
 <div class="container mt-4">
     <div class="row">
         {% for bug in bugs %}
         <div class="col-md-4 mb-4">
             <div class="card h-100">
                 {% if bug.screenshot %}
-                <img src="{{ bug.screenshot.url }}" class="card-img-top" alt="Bug screenshot">
+                <img src="{{ bug.screenshot }}" class="card-img-top" alt="Bug screenshot">
                 {% else %}
                 <img src="{% static 'default.png' %}" class="card-img-top" alt="No screenshot">
                 {% endif %}

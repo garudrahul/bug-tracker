@@ -1,4 +1,5 @@
-# # from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect
+import requests
 # from django.contrib.auth.decorators import login_required
 # from django.contrib.auth import login
 # from .models import Bug
@@ -7,9 +8,10 @@
 def index(request):
     return render(request,'index.html')
 
-# def bug_list(request):
-#     bugs = Bug.objects.all().order_by('-created_at')
-#     return render(request, 'bug_list.html',{'bugs':bugs})
+def bug_list(request):
+    response = requests.get("http://127.0.0.1:8001/api/bugs/")
+    bugs = response.json()
+    return render(request, 'bug_list.html',{'bugs':bugs})
 
 # @login_required
 # def bug_create(request):
