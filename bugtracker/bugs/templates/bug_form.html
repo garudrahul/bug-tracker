@@ -1,12 +1,12 @@
 {% extends "layout.html" %}
 
 {% block title %}
-{% if form.instance.pk %} Edit bug {% else %} Add Bug {% endif %}
+{% if bug %} Edit bug {% else %} Add Bug {% endif %}
 {% endblock %}
 
 {% block content %}
 <h2 class="text-center mt-3">
-    {% if form.instance.pk %} Edit bug details 
+    {% if bug %} Edit bug details 
     {% else %} Add a new bug 
     {% endif %}
 </h2>
@@ -59,7 +59,7 @@
         {% csrf_token %}
         {{ form.as_p }}
         <button class="btn btn-warning" type="submit">
-            {% if form.instance.pk %} Update bug {% else %} Add this bug {% endif %}
+            {% if bug %} Update bug {% else %} Add this bug {% endif %}
         </button>
     </form>
     <a href="{% url "bug_list" %}">Back to bug list</a>

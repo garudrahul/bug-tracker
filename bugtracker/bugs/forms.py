@@ -1,12 +1,12 @@
-# from django import forms
-# from .models import Bug
-# from django.contrib.auth.forms import UserCreationForm
-# from django.contrib.auth.models import User
+from django import forms
 
-# class BugForm(forms.ModelForm):
-#     class Meta:
-#         model = Bug
-#         fields = ("title","description","status","priority","screenshot","assigned_to")
+class BugForm(forms.Form):
+    title = forms.CharField(max_length=255)
+    description = forms.CharField(widget=forms.Textarea, required=False)
+    status = forms.ChoiceField(choices=[("OPEN", "Open"), ("IN_PROGRESS", "In Progress"), ("CLOSED", "Closed")])
+    priority = forms.ChoiceField(choices=[("LOW", "Low"), ("MEDIUM", "Medium"), ("HIGH", "High")])
+    screenshot = forms.ImageField(required=False)
+    assigned_to = forms.IntegerField(required=False)
 
 # class UserRegistrationForm(UserCreationForm):
 #     email = forms.EmailField()
