@@ -6,7 +6,7 @@ Bugs Tracker
 {% endblock %}
 
 {% block content %}
-<h2 class="text-center mt-3">Bugs list</h2>
+<h2 class="text-center mt-3">Bugs list </h2>
 <a class="btn btn-primary mx-3" href="{% url "bug_create" %}">Add a bug</a> 
 
 <div class="container mt-4">
@@ -24,10 +24,10 @@ Bugs Tracker
                     <p class="card-text">{{ bug.description }}</p>
                     <p class="card-detail">Status: {{ bug.status }}  Priority: {{ bug.priority }}</p>
                     <p class="card-whom">Assigned to user: {{ bug.assigned_to }}</p>
-                    {% comment %} {% if bug.reported_by == user %} {% endcomment %}
-                    <a href="{% url "bug_edit" bug.id %}" class="btn btn-primary">Edit</a>
-                    <a href="{% url "bug_delete" bug.id %}" class="btn btn-danger">Delete</a>
-                    {% comment %} {% endif %} {% endcomment %}
+                    {% if username and bug.reported_by == username %}
+                        <a href="{% url "bug_edit" bug.id %}" class="btn btn-primary">Edit</a>
+                        <a href="{% url "bug_delete" bug.id %}" class="btn btn-danger">Delete</a>
+                    {% endif %}
                 </div>
             </div>
         </div>

@@ -5,11 +5,25 @@ Login
 {% endblock %}
 
 {% block content %}
-<h2 class="text-center mt-3">Login form</h2>
-<form method = "post">
-    {% csrf_token %}
-    {{form.as_p}}
-    <button class="btn btn-primary">Login</button>
-</form>
+<div class="login-form mt-5">
+    <h2 class="text-center">Login</h2>
+    
+    {% if error %}
+        <div style="color:red;">{{ error }}</div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <p>
+            <label for="id_username">Username:</label>
+            <input type="text" name="username" id="id_username" required>
+        </p>
+        <p>
+            <label for="id_password">Password:</label>
+            <input type="password" name="password" id="id_password" required>
+        </p>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+</div>
 <p>Don't have an account yet? <a href="{% url "register" %}">Register Here</a></p>
 {% endblock %}

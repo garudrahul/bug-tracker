@@ -6,10 +6,21 @@ Register
 
 {% block content %}
 <h2 class="text-center mt-3">Registration form</h2>
-<form method = "post">
+<form method="post">
     {% csrf_token %}
-    {{form.as_p}}
-    <button class="btn btn-primary">Register</button>
+    <p>
+        <label>Username:</label>
+        <input type="text" name="username" required>
+    </p>
+    <p>
+        <label>Email:</label>
+        <input type="email" name="email">
+    </p>
+    <p>
+        <label>Password:</label>
+        <input type="password" name="password" required>
+    </p>
+    <button class="btn btn-primary" type="submit">Register</button>
 </form>
 <p>Already have an account? <a href="{% url "login" %}">Login Here</a></p>
 {% endblock %}

@@ -6,13 +6,8 @@ class BugForm(forms.Form):
     status = forms.ChoiceField(choices=[("OPEN", "Open"), ("IN_PROGRESS", "In Progress"), ("CLOSED", "Closed")])
     priority = forms.ChoiceField(choices=[("LOW", "Low"), ("MEDIUM", "Medium"), ("HIGH", "High")])
     screenshot = forms.ImageField(required=False)
-    assigned_to = forms.IntegerField(required=False)
+    assigned_to = forms.ChoiceField(choices=[], required=False) 
 
-# class UserRegistrationForm(UserCreationForm):
-#     email = forms.EmailField()
-#     class Meta:
-#         model = User
-#         fields = ("username","email","password1","password2")
 
 
     
