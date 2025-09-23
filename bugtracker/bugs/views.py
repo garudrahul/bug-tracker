@@ -36,7 +36,7 @@ def bug_create(request):
     if access_token:
         try:
             payload = jwt.decode(access_token, options={"verify_signature": False})
-            username = payload.get("username")  
+            username = payload.get("username")
         except Exception:
             username = None
 
@@ -57,33 +57,31 @@ def bug_create(request):
                 "description": form.cleaned_data["description"],
                 "status": form.cleaned_data["status"],
                 "priority": form.cleaned_data["priority"],
-                "assigned_to": form.cleaned_data["assigned_to"] or None,
-            }
-            headers_json = {
-                "Authorization": f"Bearer {access_token}",
-                "Content-Type": "application/json"
+                "assigned_to": (
+                    int(form.cleaned_data["assigned_to"])
+                    if form.cleaned_data["assigned_to"] else None
+                ),
             }
 
-            files = {"screenshot": request.FILES.get("screenshot")} if request.FILES else None
+            files = {"screenshot": request.FILES["screenshot"]} if "screenshot" in request.FILES else None
             headers = {"Authorization": f"Bearer {access_token}"}
-            response = requests.put(API_BASE, data=json.dumps(data), files=files, headers=headers_json)
+
+            response = requests.post(API_BASE, data=data, files=files, headers=headers)
+
             if response.status_code == 201:
                 return redirect("bug_list")
+
     else:
         form = BugForm()
         form.fields['assigned_to'].choices = user_choices
 
-    return render(request, "bug_form.html", {"form": form,"username": username})
+    return render(request, "bug_form.html", {"form": form, "username": username})
 
-import jwt
-import requests
-from django.shortcuts import render, redirect
-from .forms import BugForm
 
 def bug_edit(request, bug_id):
-    # --- 1️⃣ Get JWT from cookies ---
     access_token = request.COOKIES.get("access_token")
     username = None
+    bug = None
     if access_token:
         try:
             payload = jwt.decode(access_token, options={"verify_signature": False})
@@ -97,24 +95,24 @@ def bug_edit(request, bug_id):
     headers = {"Authorization": f"Bearer {access_token}"}
     url = f"{API_BASE}{bug_id}/"
 
-    # --- 2️⃣ Fetch users for assigned_to dropdown ---
     response_users = requests.get(API_USERS, headers=headers)
     users = response_users.json() if response_users.status_code == 200 else []
     user_choices = [(u['id'], u['username']) for u in users]
 
-    # --- 3️⃣ Handle POST (update bug) ---
+    error = None
+    is_edit = True
+
     if request.method == "POST":
         form = BugForm(request.POST, request.FILES)
         form.fields['assigned_to'].choices = user_choices
 
         if form.is_valid():
-            # Prepare JSON payload for DRF PUT
             payload = {
                 "title": form.cleaned_data["title"],
                 "description": form.cleaned_data["description"],
                 "status": form.cleaned_data["status"],
                 "priority": form.cleaned_data["priority"],
-                "assigned_to": form.cleaned_data["assigned_to"] or None,
+                "assigned_to": int(form.cleaned_data["assigned_to"]) if form.cleaned_data["assigned_to"] else None,
             }
 
             headers_json = {
@@ -122,7 +120,7 @@ def bug_edit(request, bug_id):
                 "Content-Type": "application/json"
             }
 
-            response = requests.put(url, data=json.dumps(payload), headers=headers_json)
+            response = requests.patch(url, data=json.dumps(payload), headers=headers_json)
 
             if response.status_code in [200, 204]:
                 return redirect("bug_list")
@@ -131,7 +129,6 @@ def bug_edit(request, bug_id):
         else:
             error = "Form validation failed"
 
-    # --- 4️⃣ Handle GET (prefill form) ---
     else:
         response_bug = requests.get(url, headers=headers)
         if response_bug.status_code == 200:
@@ -145,15 +142,19 @@ def bug_edit(request, bug_id):
             })
             form.fields['assigned_to'].choices = user_choices
             error = None
+            bug = bug_data
         else:
             form = BugForm()
             form.fields['assigned_to'].choices = user_choices
             error = "Could not fetch bug"
+            bug = None
 
     return render(request, "bug_form.html", {
         "form": form,
         "error": error,
-        "username": username
+        "username": username,
+        "bug": bug,
+        "is_edit": is_edit, 
     })
 
 def bug_delete(request, bug_id):
